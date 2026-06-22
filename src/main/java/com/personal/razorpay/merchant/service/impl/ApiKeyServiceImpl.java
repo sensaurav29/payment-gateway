@@ -7,6 +7,7 @@ import com.personal.razorpay.merchant.dto.response.ApiKeyCreateResponse;
 import com.personal.razorpay.merchant.dto.response.ApiKeysGetResponse;
 import com.personal.razorpay.merchant.entity.ApiKey;
 import com.personal.razorpay.merchant.entity.Merchant;
+import com.personal.razorpay.merchant.mapper.ApiKeyMapper;
 import com.personal.razorpay.merchant.repository.ApiKeyRepository;
 import com.personal.razorpay.merchant.repository.MerchantRepository;
 import com.personal.razorpay.merchant.service.ApiKeyService;
@@ -27,7 +28,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     private final ApiKeyRepository apiKeyRepository;
     private final MerchantRepository merchantRepository;
-
+    private final ApiKeyMapper apiKeyMapper;
 
     @Override
     @Transactional
@@ -48,27 +49,18 @@ public class ApiKeyServiceImpl implements ApiKeyService {
                 .build();
         apiKey = apiKeyRepository.save(apiKey);
 
-        return new ApiKeyCreateResponse(apiKey.getId(), keyId, rawSecret, request.environment().toString());
+        return new ApiKeyCreateResponse(apiKey.getId(), keyId,
+                rawSecret, request.environment().toString());
     }
 
     @Override
     public List<ApiKeysGetResponse> listByMerchant(UUID merchantId) {
-        return apiKeyRepository.findByMerchant_Id(merchantId)
-                .stream()
-                .map(apiKey -> new ApiKeysGetResponse(
-                        apiKey.getId(),
-                        apiKey.getKeyId(),
-                        apiKey.getEnvironment(),
-                        apiKey.getEnabled(),
-                        apiKey.getLastUsedAt(),
-                        null
-                ))
-                .collect(Collectors.toList());
+
+        return apiKeyMapper.toResponseList(apiKeyRepository.findByMerchant_Id(merchantId));
 
     }
 
     @Override
-
     @Transactional
     public void revoke(UUID merchantId, UUID keyId) {
         ApiKey apiKey = apiKeyRepository.findById(keyId)
