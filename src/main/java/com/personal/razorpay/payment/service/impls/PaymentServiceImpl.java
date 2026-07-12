@@ -66,6 +66,8 @@ public class PaymentServiceImpl implements PaymentService {
                 order.getId(), merchantId,
                 order.getAmount(), request.method(),
                 request.methodDetails());
+
+        paymentTransitionService.apply(payment, PaymentEvent.AUTHORIZE_ATTEMPT);
         PaymentResult result = paymentGatewayRouter.initiate(paymentRequest);
 
         switch (result) {
@@ -76,7 +78,8 @@ public class PaymentServiceImpl implements PaymentService {
                 payment.setErrorDescription(failure.errorDescription());
             }
             case PaymentResult.Success success -> {
-
+                log.warn("Invalid State");
+                return null;
             }
         }
 
