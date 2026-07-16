@@ -4,7 +4,11 @@ import com.personal.razorpay.common.util.RandomizeUtil;
 import com.personal.razorpay.payment.processor.PaymentProcessor;
 import com.personal.razorpay.payment.processor.dto.PaymentProcessorRequest;
 import com.personal.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
+@Component
+@Slf4j
 public class UpiPaymentProcessor implements PaymentProcessor {
 
 

@@ -4,7 +4,9 @@ import com.personal.razorpay.common.util.RandomizeUtil;
 import com.personal.razorpay.payment.processor.PaymentProcessor;
 import com.personal.razorpay.payment.processor.dto.PaymentProcessorRequest;
 import com.personal.razorpay.payment.processor.dto.PaymentProcessorResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class NetBankingPaymentProcessor implements PaymentProcessor {
 
 

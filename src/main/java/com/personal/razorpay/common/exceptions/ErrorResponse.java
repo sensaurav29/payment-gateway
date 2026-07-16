@@ -13,7 +13,7 @@ public record ErrorResponse(
         List<FieldError> fieldErrors
 ) {
 
-    private record FieldError(String field, String message) { }
+    public record FieldError(String field, String message) { }
 
     public static ErrorResponse of( String errorCode , String errorDescription){
         return new ErrorResponse(errorCode, errorDescription, LocalDateTime.now(), null);
