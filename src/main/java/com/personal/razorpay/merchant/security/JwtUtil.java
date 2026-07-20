@@ -42,5 +42,12 @@ public class JwtUtil {
                 .getPayload();
     }
 
+    public String extractRoles(Claims claims) {
+        return claims.get("role", String.class);
+    }
+
+    public String getMerchantId(Claims claims) {
+        return claims.get("merchantId", String.class);
+    }
 }
 

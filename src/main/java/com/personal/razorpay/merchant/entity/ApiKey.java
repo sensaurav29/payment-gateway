@@ -42,7 +42,7 @@ public class ApiKey extends BaseEntity {
 
     @Column(nullable = false)
     @Builder.Default
-    private Boolean enabled = true;
+    private boolean enabled = true;
 
     private LocalDateTime lastUsedAt;
     private LocalDateTime rotatedAt;

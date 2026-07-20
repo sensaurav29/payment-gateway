@@ -11,6 +11,7 @@ import com.personal.razorpay.merchant.mapper.ApiKeyMapper;
 import com.personal.razorpay.merchant.repository.ApiKeyRepository;
 import com.personal.razorpay.merchant.repository.MerchantRepository;
 import com.personal.razorpay.merchant.service.ApiKeyService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     private final ApiKeyRepository apiKeyRepository;
     private final MerchantRepository merchantRepository;
     private final ApiKeyMapper apiKeyMapper;
+    private BCryptPasswordEncoder BCRYPT = new BCryptPasswordEncoder();
 
     @Override
     @Transactional
@@ -43,7 +45,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         ApiKey apiKey = ApiKey.builder()
                 .merchant(merchant)
                 .keyId(keyId)
-                .keySecretHash(rawSecret)
+                .keySecretHash(BCRYPT.encode(rawSecret))
                 .environment(request.environment())
                 .enabled(true)
                 .build();
@@ -80,7 +82,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
         String newRawSecret = RandomizeUtil.randomBase64(42);
         apiKey.setPreviousKeySecretHash(apiKey.getKeySecretHash());
-        apiKey.setKeySecretHash(newRawSecret);
+        apiKey.setKeySecretHash(BCRYPT.encode(newRawSecret));
         apiKey.setRotatedAt(LocalDateTime.now());
         apiKey.setGracePeriodExpiresAt(LocalDateTime.now().plusHours(24)); // 24 hours grace period
         apiKey = apiKeyRepository.save(apiKey);
